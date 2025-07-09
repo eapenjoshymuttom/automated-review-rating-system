@@ -258,15 +258,15 @@ def extractReviews(name, max_pages=15):
         return [], "N/A", "N/A" # Returns empty lists/N/A.
     
     # Save raw reviews
-    if not os.path.exists('reviews'): # Checks if a 'reviews' directory exists.
-        os.makedirs('reviews') # Creates the 'reviews' directory if it doesn't exist.
-    
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") # Generates a timestamp for the filename.
-    # Constructs the filename for the raw CSV file.
-    raw_filename = f'reviews/{name}_flipkart_reviews{timestamp}.csv'
-    df_reviews = pd.DataFrame(all_reviews) # Creates a pandas DataFrame from the raw reviews.
-    
-    df_reviews.to_csv(raw_filename, index=False) # Saves the DataFrame to a CSV file without the index.
+    save_dir = "C:/Users/eapen/OneDrive/Desktop/automated-review-rating-system/data/reviews"
+    os.makedirs(save_dir, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    raw_filename = os.path.join(save_dir, f"{name}_flipkart_reviews{timestamp}.csv")
+    df_reviews = pd.DataFrame(all_reviews)
+    df_reviews = df_reviews.replace("N/A", pd.NA)
+    df_reviews=df_reviews.dropna() # Drops any rows with NaN values in the DataFrame.
+    df_reviews.to_csv(raw_filename, index=False) # Saves the collected reviews to a CSV file.
     print(f"\nSaved {len(all_reviews)} raw reviews to {raw_filename}") # Confirms saving.
 
     # Preprocess review descriptions
@@ -314,20 +314,16 @@ def extractReviewsFromLink(link, max_pages=15):
         return [], "N/A", "N/A" # Returns empty lists/N/A.
     
     # Save raw reviews
-    if not os.path.exists('reviews'): # Checks for 'reviews' directory.
-        os.makedirs('reviews') # Creates it if it doesn't exist.
-    
-    # This line re-sanitizes the link, but only using the last part of the URL.
-    # This might result in shorter, less unique filenames if multiple products have similar last URL segments.
+    save_dir = "C:/Users/eapen/OneDrive/Desktop/automated-review-rating-system/data/reviews" # Directory to save reviews.
+    os.makedirs(save_dir, exist_ok=True) # Creates the 'reviews' directory if it doesn't exist.  
+
     sanitized_link = sanitize_filename(link.split("/")[-1])
-    # Reconstructs the raw filename with the potentially shorter sanitized link.
-    raw_filename = f'reviews/{sanitized_link}_flipkart_reviews{timestamp}.csv'
-    
-    # Ensure the directory exists (redundant if os.makedirs('reviews') already ran, but harmless)
-    os.makedirs(os.path.dirname(raw_filename), exist_ok=True)
-    
-    df_reviews = pd.DataFrame(all_reviews) # Creates DataFrame from raw reviews.
-    df_reviews.to_csv(raw_filename, index=False) # Saves DataFrame to CSV.
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    raw_filename = os.path.join(save_dir, f"{sanitized_link}_flipkart_reviews{timestamp}.csv")
+    df_reviews = pd.DataFrame(all_reviews)
+    df_reviews = df_reviews.replace("N/A", pd.NA) # Replaces "N/A" strings with pandas' NA.
+    df_reviews=df_reviews.dropna() # Drops any rows with NaN values in the DataFrame.
+    df_reviews.to_csv(raw_filename, index=False)
     print(f"\nSaved {len(all_reviews)} raw reviews to {raw_filename}") # Confirms saving.
 
     # Preprocess review descriptions
@@ -343,3 +339,20 @@ def extractReviewsFromLink(link, max_pages=15):
         'price': price,
         'image_url': image_url
     }
+
+if __name__ == "__main__":
+    # Top-level function call to begin the review extraction process
+    product_name = input("Enter the product name to search on Flipkart: ")
+    
+    # Step-by-step call hierarchy:
+    # extractReviews → get_product_links → modify_reviews_url → get_reviews → get_reviews_from_page
+    # extractReviews → preprocess_reviews → clean_text → remove_stopwords → lemmatize_text
+    # extractReviews → get_product_details
+    
+    result = extractReviews(product_name, max_pages=10)
+
+    print("\n--- Summary ---")
+    print(f"Total Raw Reviews: {len(result['raw_reviews'])}")
+    print(f"Total Processed Reviews: {len(result['processed_reviews'])}")
+    print(f"Product Price: {result['price']}")
+    print(f"Product Image URL: {result['image_url']}")

@@ -96,7 +96,5 @@ def get_product_links(product_name, max_retries=5):
 
     return links  # Returns the list of extracted Flipkart product links.
 
-#if __name__ == "__main__":
-    #links = get_product_links("Samsung Galaxy S23 Ultra")
-    #print(links)
+ # Prompts user for a product name to search.
 
