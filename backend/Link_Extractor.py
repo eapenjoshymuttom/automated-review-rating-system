@@ -1,4 +1,4 @@
-print("hello")
+
 from selenium import webdriver  # Imports the Selenium WebDriver, which allows interaction with web browsers.
 from selenium.webdriver.chrome.service import Service  # Imports Service for managing the ChromeDriver process.
 from selenium.webdriver.chrome.options import Options  # Imports Options to configure Chrome browser behavior (e.g., headless mode).
@@ -95,4 +95,8 @@ def get_product_links(product_name, max_retries=5):
         print(f"{i}. {link}")  # Prints each found link with its sequential number.
 
     return links  # Returns the list of extracted Flipkart product links.
-get_product_links("samsung s23 ultra")
+
+#if __name__ == "__main__":
+    #links = get_product_links("Samsung Galaxy S23 Ultra")
+    #print(links)
+
