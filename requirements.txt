@@ -1,0 +1,8 @@
+beautifulsoup4
+selenium
+requests
+lxml
+pandas
+numpy   
+matplotlib
+scikit-learn    
