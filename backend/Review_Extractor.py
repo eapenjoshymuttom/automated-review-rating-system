@@ -266,6 +266,7 @@ def extractReviews(name, max_pages=15):
     df_reviews = pd.DataFrame(all_reviews)
     df_reviews = df_reviews.replace("N/A", pd.NA)
     df_reviews=df_reviews.dropna() # Drops any rows with NaN values in the DataFrame.
+    df_reviews = df_reviews.drop_duplicates() # Removes duplicate reviews based on all columns.
     df_reviews.to_csv(raw_filename, index=False) # Saves the collected reviews to a CSV file.
     print(f"\nSaved {len(all_reviews)} raw reviews to {raw_filename}") # Confirms saving.
 
@@ -323,6 +324,7 @@ def extractReviewsFromLink(link, max_pages=15):
     df_reviews = pd.DataFrame(all_reviews)
     df_reviews = df_reviews.replace("N/A", pd.NA) # Replaces "N/A" strings with pandas' NA.
     df_reviews=df_reviews.dropna() # Drops any rows with NaN values in the DataFrame.
+    df_reviews = df_reviews.drop_duplicates() # Removes duplicate reviews based on all columns
     df_reviews.to_csv(raw_filename, index=False)
     print(f"\nSaved {len(all_reviews)} raw reviews to {raw_filename}") # Confirms saving.
 
